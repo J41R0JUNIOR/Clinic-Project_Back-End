@@ -39,7 +39,7 @@ Este repositório contém o back-end do aplicativo de clínica, implementado com
 1. **Criar Paciente**: `POST /patients` - Cria um paciente.
 2. **Listar Pacientes**: `GET /patients/allPatients` - Lista todos os pacientes.
 3. **Buscar Paciente**: `GET /patient/{id}` - Busca paciente por ID.
-4. **Atualizar Paciente**: `PUT /patients/{id}` - Atualiza dados de um paciente.
+4. **Atualizar Paciente**: `PATCH /patients/{id}` - Atualiza dados de um paciente.
 5. **Deletar Paciente**: `DELETE /patients/{id}` - Remove um paciente.
 
 ## Implantação
