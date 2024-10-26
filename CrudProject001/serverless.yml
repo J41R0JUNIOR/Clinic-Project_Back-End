@@ -1,0 +1,66 @@
+org: j41r0
+service: CrudProject001
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:*
+            - events:*
+          Resource: "*"
+
+functions:
+  patientsCreate:
+    handler: src/patients/functions/create.handler
+    events:
+      - http:
+          method: POST
+          path: patients
+
+  patientsRead:
+    handler: src/patients/functions/read.findHandler
+    events:
+      - http:
+          method: GET
+          path: patients/allPatients
+        
+  patientReadById:
+    handler: src/patients/functions/read.findByIdHandler
+    events:
+      - http:
+          method: GET
+          path: patient/{id}
+  
+  patientDelete:
+    handler: src/patients/functions/delete.handler
+    events:
+      - http:
+          method: DELETE
+          path: patient/{id}
+
+  patientsPatch:
+    handler: src/patients/functions/patch.handler
+    events:
+      - http:
+          method: PATCH
+          path: patients/{id}
+
+
+
+resources:
+  Resources:
+    patientsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: Patients 
+        AttributeDefinitions:
+          - AttributeName: PK #taxId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: PK
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
