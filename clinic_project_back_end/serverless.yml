@@ -1,5 +1,6 @@
 org: j41r0
-service: CrudProject001
+service: clinic-project-backend
+
 
 provider:
   name: aws
@@ -56,7 +57,7 @@ resources:
     patientsTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: Patients 
+        TableName: PatientTable
         AttributeDefinitions:
           - AttributeName: PK #taxId
             AttributeType: S
