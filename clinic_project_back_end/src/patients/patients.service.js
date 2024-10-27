@@ -6,7 +6,7 @@ import {
     PutEventsCommand,
 } from "@aws-sdk/client-eventbridge";
 
-const PatientModel = dynamoose.model("Patients", PatientSchema, { create: false });
+const PatientModel = dynamoose.model("PatientTable", PatientSchema, { create: false });
 
 async function createPatient(payload) {
     payload.id = crypto.randomUUID();
