@@ -55,5 +55,3 @@ serverless deploy
 Contribuições são bem-vindas! Abra issues ou envie pull requests.
 
 ---
-
-Se precisar de mais algum ajuste, é só avisar!
