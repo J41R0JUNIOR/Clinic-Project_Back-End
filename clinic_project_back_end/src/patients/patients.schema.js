@@ -27,6 +27,7 @@ export const PatientSchema = new dynamoose.Schema(
         phoneNumber: String,
     },
     {
-        timestamps: true
+        timestamps: true,
+        saveUnknown: true
     }
 );
