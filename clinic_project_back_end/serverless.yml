@@ -15,6 +15,7 @@ provider:
           Resource: "*"
 
 functions:
+# Patient CRUD functions
   patientsCreate:
     handler: src/patients/functions/create.handler
     events:
@@ -50,8 +51,18 @@ functions:
           method: PATCH
           path: patients/{id}
 
+# Patients Mail Sender Functions
+  patientsMailSender:
+    handler: src/patients/functions/mailSender.handler
+    events:
+      - eventBridge:
+        pattern:
+        source:
+          - "aula5-clinica"
+        detail-type:
+          - "PatientCreated"
 
-
+# Patients Table
 resources:
   Resources:
     patientsTable:
