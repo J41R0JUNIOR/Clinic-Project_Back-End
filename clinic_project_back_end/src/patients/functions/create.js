@@ -5,9 +5,15 @@ import httpHeaderNormalizer from "@middy/http-header-normalizer";
 import httpContentNegotiation from "@middy/http-content-negotiation";
 import httpResponseSerializer from "@middy/http-response-serializer";
 import PatientsService from "../patients.service.js";
+import { validateNumber } from "./validations.js";
 
 const create = async (event) => {
-    const patient = await PatientsService.createPatient(event.body);
+    const patientData = event.body;
+
+    validateNumber(patientData.phoneNumber);
+
+    const patient = await PatientsService.createPatient(patientData);
+    patient.PK = undefined;
 
     await PatientsService.notifyPatientCreated(patient);
 
@@ -17,7 +23,7 @@ const create = async (event) => {
     };
 };
 
-export const handler = middy()
+export const handler = middy(create)
     .use(httpHeaderNormalizer())
     .use(httpContentNegotiation())
     .use(
@@ -40,5 +46,4 @@ export const handler = middy()
         })
     )
     .use(httpErrorHandler())
-    .use(httpJsonBodyParser({ disableContentTypeError: true }))
-    .handler(create);
+    .use(httpJsonBodyParser({ disableContentTypeError: true }));
