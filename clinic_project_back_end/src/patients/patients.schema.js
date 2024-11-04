@@ -10,9 +10,19 @@ export const PatientSchema = new dynamoose.Schema(
         taxId: String,
         healthServiceNumber: String,
         birthDate: String,
-        name: String,
-        weight: Number,
-        height: Number,
+        name: {
+            type: String,
+            required: true,
+        },
+        weight: {
+            type: Number,
+            required: false,
+
+        },
+        height: { 
+            type: Number,
+            required: false,
+        },
         bloodType: String,
         address: {
             type: Object,
@@ -24,7 +34,7 @@ export const PatientSchema = new dynamoose.Schema(
                 postalCode: String,
             },
         },
-        phoneNumber: String,
+        phoneNumber: String
     },
     {
         timestamps: true,
