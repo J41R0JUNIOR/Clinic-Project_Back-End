@@ -26,9 +26,7 @@ const create = async (event) => {
     } catch (error) {
         return {
             statusCode: error.statusCode || 500,
-            body: JSON.stringify({
-                message: error.message
-            }),
+            body: JSON.stringify(error.message)
         };
     }
 };
