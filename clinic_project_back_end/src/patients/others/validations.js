@@ -25,12 +25,6 @@ function nameVerification(name) {
     if (name.length > 100) {
         throw new createError.BadRequest("Name should not exceed 100 characters.");
     }
-
-    const hasSpecialCharacters = /[^a-zA-Z ]/.test(name);
-
-    if (hasSpecialCharacters) {
-        throw new createError.BadRequest("Name should not contain special characters.");
-    }
 }
 
 export { createValidations };

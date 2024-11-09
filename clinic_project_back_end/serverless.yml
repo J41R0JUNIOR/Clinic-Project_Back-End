@@ -53,7 +53,7 @@ functions:
 
 # Patients Mail Sender Functions
   patientsMailSender:
-    handler: src/patients/functions/mailSender.handler
+    handler: src/patients/others/mailSender.handler
     events:
       - eventBridge:
         pattern:
