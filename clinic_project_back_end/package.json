@@ -20,6 +20,7 @@
     "@middy/http-header-normalizer": "^5.5.1",
     "@middy/http-json-body-parser": "^5.5.1",
     "@middy/http-response-serializer": "^5.5.1",
-    "dynamoose": "^4.0.2"
+    "dynamoose": "^4.0.2",
+    "http-errors": "^2.0.0"
   }
 }
