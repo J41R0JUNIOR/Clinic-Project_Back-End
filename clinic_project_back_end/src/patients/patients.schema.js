@@ -6,24 +6,41 @@ export const PatientSchema = new dynamoose.Schema(
             type: String,
             hashKey: true,
         },
+
+        doctor: {
+            type: Object,
+            schema: {
+                name: String,
+                id: String,
+            }
+        },
+
         id: String,
+
         taxId: String,
+
         healthServiceNumber: String,
+
         birthDate: String,
+
         name: {
             type: String,
             required: true,
         },
+
         weight: {
             type: Number,
             required: false,
 
         },
+
         height: { 
             type: Number,
             required: false,
         },
+
         bloodType: String,
+
         address: {
             type: Object,
             schema: {
@@ -34,8 +51,10 @@ export const PatientSchema = new dynamoose.Schema(
                 postalCode: String,
             },
         },
+
         phoneNumber: String
     },
+    
     {
         timestamps: true,
         saveUnknown: true
