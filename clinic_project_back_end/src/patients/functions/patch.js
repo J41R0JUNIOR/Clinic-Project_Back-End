@@ -5,15 +5,28 @@ import httpHeaderNormalizer from "@middy/http-header-normalizer";
 import httpContentNegotiation from "@middy/http-content-negotiation";
 import httpResponseSerializer from "@middy/http-response-serializer";
 import PatientsService from "../patients.service.js";
+import { createValidations } from "../others/validations.js";
+
 
 const patchPatient = async (event) => {
-    const { id } = event.pathParameters;
-    const patient = await PatientsService.updatePatient(id, event.body);
+    try{
+        const patientData = event.body;
 
-    return {
-        statusCode: 200,
-        body: patient,
-    };
+        createValidations(patientData);
+
+        const { id } = event.pathParameters;
+        const patient = await PatientsService.updatePatient(id, event.body);
+
+        return {
+            statusCode: 200,
+            body: patient,
+        };
+    }catch (error) {
+        return {
+            statusCode: error.statusCode || 500,
+            body: JSON.stringify(error.message)
+        };
+    }
 }
 
 export const handler = middy()
