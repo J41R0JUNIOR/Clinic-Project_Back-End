@@ -62,6 +62,22 @@ functions:
         detail-type:
           - "PatientCreated"
 
+  # Sign Up Function
+
+  signUp:
+    handler: src/auth/signUp.handler
+    events:
+      - http:
+          method: POST
+          path: signUp
+
+  confirmSighUp:
+    handler: src/auth/signUp.confirmationHandler
+    events:
+      - http:
+          method: POST
+          path: confirmSighUp
+
 # Patients Table
 resources:
   Resources:
