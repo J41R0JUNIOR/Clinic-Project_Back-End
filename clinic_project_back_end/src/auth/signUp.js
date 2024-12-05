@@ -25,7 +25,7 @@ const signUpRequest = async (event) => {
 
         return {
             statusCode: 200,
-            body: "User created successfully",
+            body: "Concluded Sign Up",
         };
     } catch (error) {
         return {
