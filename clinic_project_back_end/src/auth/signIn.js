@@ -12,19 +12,24 @@ import {
 const sighInRequest = async (event) => {
     const { clientId, username, password } = event.body;
 
-    if (!clientId || !username || !password ) {
+    if (!clientId || !username || !password) {
         return {
             statusCode: 400,
-            body: "Missing required fields: clientId, username, password, email.",
+            body: "Missing required fields: clientId, username, password.",
         };
     }
 
     try {
-        await sighIn({ clientId, username, password });
+        const response = await sighIn({ clientId, username, password });
 
         return {
             statusCode: 200,
-            body: "User confirmed successfully",
+            body: JSON.stringify({
+                message: "User signed in successfully",
+                accessToken: response.AuthenticationResult.AccessToken,
+                refreshToken: response.AuthenticationResult.RefreshToken,
+                idToken: response.AuthenticationResult.IdToken,
+            }),
         };
     } catch (error) {
         return {
@@ -32,28 +37,23 @@ const sighInRequest = async (event) => {
             body: JSON.stringify({ message: error.message, error }),
         };
     }
-}
- 
-
+};
 
 const sighIn = async ({ clientId, username, password }) => {
     const client = new CognitoIdentityProviderClient({});
 
     const command = new InitiateAuthCommand({
-        "AuthFlow": "USER_PASSWORD_AUTH",
+        AuthFlow: "USER_PASSWORD_AUTH",
         ClientId: clientId,
         AuthParameters: {
             USERNAME: username,
             PASSWORD: password,
-        }
+        },
     });
 
     try {
         return await client.send(command);
     } catch (error) {
-        if (error.name === "UsernameExistsException") {
-            throw new Error("Username already exists.");
-        }
         throw error;
     }
 };
