@@ -22,6 +22,7 @@ functions:
       - http:
           method: POST
           path: patients
+          authorizer: aws_iam
 
   patientsRead:
     handler: src/patients/functions/read.findHandler
@@ -29,6 +30,7 @@ functions:
       - http:
           method: GET
           path: patients/allPatients
+          authorizer: aws_iam
         
   patientReadById:
     handler: src/patients/functions/read.findByIdHandler
@@ -36,6 +38,7 @@ functions:
       - http:
           method: GET
           path: patient/{id}
+          authorizer: aws_iam
   
   patientDelete:
     handler: src/patients/functions/delete.handler
@@ -43,6 +46,7 @@ functions:
       - http:
           method: DELETE
           path: patient/{id}
+          authorizer: aws_iam
 
   patientsPatch:
     handler: src/patients/functions/patch.handler
@@ -50,6 +54,7 @@ functions:
       - http:
           method: PATCH
           path: patients/{id}
+          authorizer: aws_iam
 
 # Patients Mail Sender Functions
   patientsMailSender:
