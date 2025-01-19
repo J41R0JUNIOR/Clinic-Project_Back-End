@@ -24,12 +24,12 @@ const sighInRequest = async (event) => {
 
         return {
             statusCode: 200,
-            body: JSON.stringify({
+            body: {
                 message: "User signed in successfully",
                 accessToken: response.AuthenticationResult.AccessToken,
                 refreshToken: response.AuthenticationResult.RefreshToken,
                 idToken: response.AuthenticationResult.IdToken,
-            }),
+            },
         };
     } catch (error) {
         return {
