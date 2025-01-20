@@ -92,8 +92,6 @@ const confirmSignUp = ({ clientId, username, code }) => {
     return client.send(command);
 };
 
-
-
 export const handler = middy(signUpRequest)
     .use(httpHeaderNormalizer())
     .use(httpContentNegotiation())
@@ -107,7 +105,6 @@ export const handler = middy(signUpRequest)
     }))
     .use(httpErrorHandler())
     .use(httpJsonBodyParser({ disableContentTypeError: true }));
-
 
 export const confirmationHandler = middy(confirmSighUpRequest)
     .use(httpHeaderNormalizer())
