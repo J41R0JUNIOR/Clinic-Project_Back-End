@@ -1,7 +1,6 @@
 org: j41r0
 service: clinic-project-backend
 
-
 provider:
   name: aws
   runtime: nodejs20.x
@@ -15,13 +14,14 @@ provider:
           Resource: "*"
 
 functions:
-# Patient CRUD functions
+  # Patient CRUD functions
   patientsCreate:
     handler: src/patients/functions/create.handler
     events:
       - http:
           method: POST
           path: patients
+          authorizer: aws_iam
 
   patientsRead:
     handler: src/patients/functions/read.findHandler
@@ -29,6 +29,7 @@ functions:
       - http:
           method: GET
           path: patients/allPatients
+          authorizer: aws_iam
         
   patientReadById:
     handler: src/patients/functions/read.findByIdHandler
@@ -36,6 +37,7 @@ functions:
       - http:
           method: GET
           path: patient/{id}
+          authorizer: aws_iam
   
   patientDelete:
     handler: src/patients/functions/delete.handler
@@ -43,6 +45,7 @@ functions:
       - http:
           method: DELETE
           path: patient/{id}
+          authorizer: aws_iam
 
   patientsPatch:
     handler: src/patients/functions/patch.handler
@@ -50,26 +53,28 @@ functions:
       - http:
           method: PATCH
           path: patients/{id}
+          authorizer: aws_iam
 
-# Patients Mail Sender Functions
+  # Patients Mail Sender Functions
   patientsMailSender:
     handler: src/patients/others/mailSender.handler
     events:
       - eventBridge:
-        pattern:
-        source:
-          - "aula5-clinica"
-        detail-type:
-          - "PatientCreated"
+          pattern:
+            source:
+              - "aula5-clinica"
+            detail-type:
+              - "PatientCreated"
 
   # Auth Functions
-
   signUp:
     handler: src/auth/signUp.handler
     events:
       - http:
           method: POST
           path: signUp
+          # No authorization required
+          authorizer: null
 
   confirmSighUp:
     handler: src/auth/signUp.confirmationHandler
@@ -77,6 +82,8 @@ functions:
       - http:
           method: POST
           path: confirmSighUp
+          # No authorization required
+          authorizer: null
 
   signIn:
     handler: src/auth/signIn.handler
@@ -84,6 +91,8 @@ functions:
       - http:
           method: POST
           path: signIn
+          # No authorization required
+          authorizer: null
 
 # Patients Table
 resources:
