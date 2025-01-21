@@ -7,9 +7,30 @@ import httpJsonBodyParser from "@middy/http-json-body-parser";
 import {
     SignUpCommand,
     ConfirmSignUpCommand,
+    ResendConfirmationCodeCommand,
     CognitoIdentityProviderClient,
 } from "@aws-sdk/client-cognito-identity-provider";
 
+// Utility to create Cognito client
+const createCognitoClient = () => new CognitoIdentityProviderClient({});
+
+// Middleware configuration
+const commonMiddlewares = () => [
+    httpHeaderNormalizer(),
+    httpContentNegotiation(),
+    httpResponseSerializer({
+        serializers: [
+            { regex: /^application\/xml$/, serializer: ({ body }) => `<message>${body}</message>` },
+            { regex: /^application\/json$/, serializer: ({ body }) => JSON.stringify(body) },
+            { regex: /^text\/plain$/, serializer: ({ body }) => body },
+        ],
+        defaultContentType: "application/json",
+    }),
+    httpErrorHandler(),
+    httpJsonBodyParser({ disableContentTypeError: true }),
+];
+
+// Sign-Up Request Handler
 const signUpRequest = async (event) => {
     const { clientId, username, password, email } = event.body;
 
@@ -22,10 +43,9 @@ const signUpRequest = async (event) => {
 
     try {
         await signUp({ clientId, username, password, email });
-
         return {
             statusCode: 200,
-            body: "Concluded Sign Up",
+            body: "Sign Up successful.",
         };
     } catch (error) {
         return {
@@ -35,9 +55,9 @@ const signUpRequest = async (event) => {
     }
 };
 
+// Sign-Up Logic
 const signUp = async ({ clientId, username, password, email }) => {
-    const client = new CognitoIdentityProviderClient({});
-
+    const client = createCognitoClient();
     const command = new SignUpCommand({
         ClientId: clientId,
         Username: username,
@@ -55,7 +75,8 @@ const signUp = async ({ clientId, username, password, email }) => {
     }
 };
 
-const confirmSighUpRequest = async (event) => {
+// Confirm Sign-Up Request Handler
+const confirmSignUpRequest = async (event) => {
     const { clientId, username, code } = event.body;
 
     if (!clientId || !username || !code) {
@@ -67,10 +88,9 @@ const confirmSighUpRequest = async (event) => {
 
     try {
         await confirmSignUp({ clientId, username, code });
-
         return {
             statusCode: 200,
-            body: "User confirmed successfully",
+            body: "User confirmed successfully.",
         };
     } catch (error) {
         return {
@@ -78,11 +98,11 @@ const confirmSighUpRequest = async (event) => {
             body: JSON.stringify({ message: error.message, error }),
         };
     }
-}
+};
 
-const confirmSignUp = ({ clientId, username, code }) => {
-    const client = new CognitoIdentityProviderClient({});
-
+// Confirm Sign-Up Logic
+const confirmSignUp = async ({ clientId, username, code }) => {
+    const client = createCognitoClient();
     const command = new ConfirmSignUpCommand({
         ClientId: clientId,
         Username: username,
@@ -92,30 +112,42 @@ const confirmSignUp = ({ clientId, username, code }) => {
     return client.send(command);
 };
 
-export const handler = middy(signUpRequest)
-    .use(httpHeaderNormalizer())
-    .use(httpContentNegotiation())
-    .use(httpResponseSerializer({
-        serializers: [
-            { regex: /^application\/xml$/, serializer: ({ body }) => `<message>${body}</message>` },
-            { regex: /^application\/json$/, serializer: ({ body }) => JSON.stringify(body) },
-            { regex: /^text\/plain$/, serializer: ({ body }) => body },
-        ],
-        defaultContentType: "application/json",
-    }))
-    .use(httpErrorHandler())
-    .use(httpJsonBodyParser({ disableContentTypeError: true }));
+// Resend Confirmation Code Request Handler
+const resendConfirmationCodeRequest = async (event) => {
+    const { clientId, username } = event.body;
 
-export const confirmationHandler = middy(confirmSighUpRequest)
-    .use(httpHeaderNormalizer())
-    .use(httpContentNegotiation())
-    .use(httpResponseSerializer({
-        serializers: [
-            { regex: /^application\/xml$/, serializer: ({ body }) => `<message>${body}</message>` },
-            { regex: /^application\/json$/, serializer: ({ body }) => JSON.stringify(body) },
-            { regex: /^text\/plain$/, serializer: ({ body }) => body },
-        ],
-        defaultContentType: "application/json",
-    }))
-    .use(httpErrorHandler())
-    .use(httpJsonBodyParser({ disableContentTypeError: true }));
+    if (!clientId || !username) {
+        return {
+            statusCode: 400,
+            body: "Missing required fields: clientId, username.",
+        };
+    }
+
+    try {
+        await resendConfirmationCode({ clientId, username });
+        return {
+            statusCode: 200,
+            body: "Confirmation code resent successfully.",
+        };
+    } catch (error) {
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ message: error.message, error }),
+        };
+    }
+};
+
+// Resend Confirmation Code Logic
+const resendConfirmationCode = async ({ clientId, username }) => {
+    const client = createCognitoClient();
+    const command = new ResendConfirmationCodeCommand({
+        ClientId: clientId,
+        Username: username,
+    });
+
+    return client.send(command);
+};
+
+export const signUpHandler = middy(signUpRequest).use(commonMiddlewares());
+export const confirmSignUpHandler = middy(confirmSignUpRequest).use(commonMiddlewares());
+export const resendConfirmationCodeHandler = middy(resendConfirmationCodeRequest).use(commonMiddlewares());

@@ -68,12 +68,11 @@ functions:
 
   # Auth Functions
   signUp:
-    handler: src/auth/signUp.handler
+    handler: src/auth/signUp.signUpHandler
     events:
       - http:
           method: POST
           path: signUp
-          # No authorization required
           authorizer: null
 
   confirmSighUp:
@@ -82,7 +81,14 @@ functions:
       - http:
           method: POST
           path: confirmSighUp
-          # No authorization required
+          authorizer: null
+
+  resendConfirmationCode:
+    handler: src/auth/signUp.resendConfirmationCodeHandler
+    events:
+      - http:
+          method: POST
+          path: resendConfirmationCode
           authorizer: null
 
   signIn:
@@ -91,7 +97,6 @@ functions:
       - http:
           method: POST
           path: signIn
-          # No authorization required
           authorizer: null
 
 # Patients Table
