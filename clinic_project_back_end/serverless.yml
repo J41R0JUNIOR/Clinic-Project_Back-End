@@ -76,7 +76,7 @@ functions:
           authorizer: null
 
   confirmSighUp:
-    handler: src/auth/signUp.confirmationHandler
+    handler: src/auth/signUp.confirmSignUpHandler
     events:
       - http:
           method: POST

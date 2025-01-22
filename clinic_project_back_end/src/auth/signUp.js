@@ -76,7 +76,7 @@ const signUp = async ({ clientId, username, password, email }) => {
 };
 
 // Confirm Sign-Up Request Handler
-const confirmSignUpRequest = async (event) => {
+const confirmSighUpRequest = async (event) => {
     const { clientId, username, code } = event.body;
 
     if (!clientId || !username || !code) {
@@ -88,9 +88,10 @@ const confirmSignUpRequest = async (event) => {
 
     try {
         await confirmSignUp({ clientId, username, code });
+
         return {
             statusCode: 200,
-            body: "User confirmed successfully.",
+            body: "User confirmed successfully",
         };
     } catch (error) {
         return {
@@ -98,11 +99,11 @@ const confirmSignUpRequest = async (event) => {
             body: JSON.stringify({ message: error.message, error }),
         };
     }
-};
+}
 
-// Confirm Sign-Up Logic
-const confirmSignUp = async ({ clientId, username, code }) => {
-    const client = createCognitoClient();
+const confirmSignUp = ({ clientId, username, code }) => {
+    const client = new CognitoIdentityProviderClient({});
+
     const command = new ConfirmSignUpCommand({
         ClientId: clientId,
         Username: username,
@@ -149,5 +150,5 @@ const resendConfirmationCode = async ({ clientId, username }) => {
 };
 
 export const signUpHandler = middy(signUpRequest).use(commonMiddlewares());
-export const confirmSignUpHandler = middy(confirmSignUpRequest).use(commonMiddlewares());
+export const confirmSignUpHandler = middy(confirmSighUpRequest).use(commonMiddlewares());
 export const resendConfirmationCodeHandler = middy(resendConfirmationCodeRequest).use(commonMiddlewares());
